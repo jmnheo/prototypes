@@ -8,5 +8,5 @@ ATS 플랫폼 관련 경력 정리와 포트폴리오 자료를 모아두는 폴
 
 ## Asset Notes
 
-- `assets/fonts/PretendardVariable.ttf`: Pretendard font. Pretendard is distributed under the SIL Open Font License 1.1.
+- Pretendard is loaded via jsDelivr CDN in `assets/styles/font-cdn.css`. Pretendard is distributed under the SIL Open Font License 1.1.
 - SVG files in `assets/icons/` are local prototype UI assets.

@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>복수 모집분야 추가 모달</title>
+  <link rel="stylesheet" href="../assets/styles/font-cdn.css" />
+  <style>
+    :root {
+      --text: rgba(0, 0, 0, 0.85);
+      --secondary: rgba(0, 0, 0, 0.6);
+      --tertiary: rgba(0, 0, 0, 0.44);
+      --placeholder: rgba(0, 0, 0, 0.24);
+      --line: rgba(0, 0, 0, 0.12);
+      --line-strong: rgba(0, 0, 0, 0.18);
+      --surface: #fff;
+      --table-head: #fafafa;
+      --hover: rgba(0, 0, 0, 0.04);
+      --blue: #1890ff;
+      --blue-soft: #2c93f2;
+      --blue-ring: rgba(44, 147, 242, 0.32);
+      --shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.06);
+      --table-width: 1040px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #151515;
+      color: var(--text);
+      font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      background: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .modal {
+      position: relative;
+      width: min(1080px, calc(100vw - 40px));
+      height: min(708px, calc(100vh - 40px));
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      border-radius: 4px;
+      background: var(--surface);
+    }
+
+    .modal-header {
+      position: relative;
+      height: 98px;
+      padding: 20px 20px 12px;
+      flex: 0 0 98px;
+    }
+
+    .modal-title {
+      margin: 0 40px 12px 0;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 22px;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+    }
+
+    .close-button::before,
+    .close-button::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 15px;
+      width: 12px;
+      height: 1px;
+      background: var(--tertiary);
+    }
+
+    .close-button::before {
+      transform: rotate(45deg);
+    }
+
+    .close-button::after {
+      transform: rotate(-45deg);
+    }
+
+    .close-button:hover,
+    .icon-button:hover {
+      background: var(--hover);
+    }
+
+    .add-field {
+      position: relative;
+      display: block;
+      width: 360px;
+      max-width: 360px;
+      height: 32px;
+    }
+
+    .add-input {
+      width: 100%;
+      height: 32px;
+      padding: 0 72px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      outline: 0;
+      color: #30363d;
+      font-size: 12px;
+      line-height: 22px;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .add-input::placeholder {
+      color: rgba(0, 0, 0, 0.2);
+    }
+
+    .add-input:focus {
+      border-color: var(--blue-soft);
+      box-shadow: 0 0 0 3px var(--blue-ring);
+    }
+
+    .enter-hint {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(0, 0, 0, 0.2);
+      font-size: 12px;
+      line-height: 20px;
+      pointer-events: none;
+    }
+
+    .modal-body {
+      flex: 1;
+      min-height: 0;
+      padding: 4px 20px;
+      overflow: hidden;
+    }
+
+    .table {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .table-scroll {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.22) transparent;
+    }
+
+    .table.scrollable .table-scroll {
+      overflow-x: auto;
+    }
+
+    .table-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .table-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.22);
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.34);
+    }
+
+    .table-head,
+    .position-row {
+      display: grid;
+      grid-template-columns: 32px 360px 240px 220px 140px 48px;
+      width: var(--table-width);
+      min-width: var(--table-width);
+      align-items: center;
+    }
+
+    .table-head {
+      height: 32px;
+      border-bottom: 1px solid var(--line);
+      background: var(--table-head);
+      color: var(--secondary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 16px;
+    }
+
+    .table-head span {
+      padding: 0 4px;
+    }
+
+    .rows {
+      position: relative;
+      min-height: calc(100% - 32px);
+    }
+
+    .empty-view {
+      position: absolute;
+      inset: 32px 0 0;
+      display: grid;
+      place-items: center;
+      color: var(--tertiary);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: center;
+    }
+
+    .empty-view img {
+      display: block;
+      width: 20px;
+      height: 20px;
+      margin: 0 auto 6px;
+      opacity: 0.7;
+    }
+
+    .position-row {
+      position: relative;
+      height: 48px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      background: var(--surface);
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    .position-row:hover {
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    .handle-cell {
+      width: 32px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .handle-cell:active,
+    body.is-dragging .handle-cell {
+      cursor: grabbing;
+    }
+
+    .handle {
+      width: 16px;
+      height: 16px;
+      margin: 0 auto;
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    .job-input {
+      width: 356px;
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      outline: 0;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 20px;
+      transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .job-input:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .job-input:focus {
+      border-color: var(--blue-soft);
+      box-shadow: 0 0 0 3px var(--blue-ring);
+    }
+
+    .position-row.dragging {
+      opacity: 0.42;
+    }
+
+    .cell {
+      position: relative;
+      padding: 0 4px;
+    }
+
+    .career-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-trigger {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 8px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 20px;
+      text-align: left;
+      transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+
+    .select-trigger:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .select-trigger:focus,
+    .select-wrap.open .select-trigger {
+      border-color: var(--blue-soft);
+      box-shadow: 0 0 0 3px var(--blue-ring);
+      outline: 0;
+    }
+
+    .select-trigger img {
+      width: 16px;
+      height: 16px;
+      opacity: 0.66;
+      transition: transform 140ms ease;
+    }
+
+    .select-wrap.open .select-trigger img {
+      transform: rotate(180deg);
+    }
+
+    .career-select {
+      width: 232px;
+    }
+
+    .career-select.compact {
+      width: 118px;
+    }
+
+    .employment-select {
+      width: 212px;
+    }
+
+    .location-select {
+      width: 132px;
+    }
+
+    .select-menu {
+      position: absolute;
+      top: 36px;
+      left: 0;
+      z-index: 20;
+      display: none;
+      min-width: 100%;
+      padding: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 4px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .select-wrap.open .select-menu {
+      display: block;
+    }
+
+    .select-option {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 8px;
+      border-radius: 3px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 20px;
+      text-align: left;
+    }
+
+    .select-option:hover,
+    .select-option.hover-preview {
+      background: var(--hover);
+    }
+
+    .select-option.selected {
+      background: transparent;
+      font-weight: 400;
+    }
+
+    .select-option.selected:hover {
+      background: var(--hover);
+    }
+
+    .select-option.selected::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      background: url("../assets/icons/check.svg") center / 16px 16px no-repeat;
+    }
+
+    .years-field {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 108px;
+      color: var(--secondary);
+    }
+
+    .position-row[data-career="경력"] .years-field {
+      display: flex;
+    }
+
+    .years-field input {
+      width: 60px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      outline: 0;
+      color: var(--text);
+      font-size: 12px;
+      text-align: right;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    .years-field input:focus {
+      border-color: var(--blue-soft);
+      box-shadow: 0 0 0 3px var(--blue-ring);
+    }
+
+    .icon-button {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      border-radius: 4px;
+    }
+
+    .icon-button img {
+      width: 16px;
+      height: 16px;
+      opacity: 0.66;
+    }
+
+    .modal-footer {
+      height: 60px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px 16px 16px;
+      flex: 0 0 60px;
+    }
+
+    .action {
+      height: 32px;
+      min-width: 49px;
+      padding: 0 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .action.cancel {
+      border: 1px solid var(--line-strong);
+      background: var(--surface);
+    }
+
+    .action.cancel:hover {
+      background: var(--hover);
+    }
+
+    .action.save {
+      background: var(--blue);
+      color: #fff;
+      opacity: 0.5;
+      transition: opacity 140ms ease, background 140ms ease;
+    }
+
+    .action.save:hover {
+      background: #1677d2;
+    }
+
+    .action.save.active {
+      opacity: 1;
+    }
+
+    @media (max-width: 960px) {
+      .modal {
+        height: min(708px, calc(100vh - 24px));
+        width: calc(100vw - 24px);
+      }
+
+      .table-head,
+      .position-row {
+        width: var(--table-width);
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <header class="modal-header">
+      <h1 class="modal-title" id="modal-title">복수 모집분야 추가</h1>
+      <button class="close-button" type="button" aria-label="닫기"></button>
+      <label class="add-field">
+        <input class="add-input" type="text" placeholder="새 직군 추가" autocomplete="off" autofocus />
+        <span class="enter-hint">↩ Enter</span>
+      </label>
+    </header>
+
+    <main class="modal-body">
+      <section class="table" aria-label="복수 모집분야 테이블">
+        <div class="table-scroll">
+          <div class="table-head" aria-hidden="true">
+            <span></span>
+            <span>직군</span>
+            <span>경력사항</span>
+            <span>고용형태</span>
+            <span>근무지</span>
+            <span></span>
+          </div>
+          <div class="rows" data-rows></div>
+          <div class="empty-view" data-empty>
+            <div>
+              <img src="../assets/icons/info.svg" alt="" aria-hidden="true" />
+              <span>새 직군을 추가하세요.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="modal-footer">
+      <button class="action cancel" type="button">취소</button>
+      <button class="action save" type="button">저장</button>
+    </footer>
+  </section>
+
+  <script>
+    const rows = document.querySelector("[data-rows]");
+    const empty = document.querySelector("[data-empty]");
+    const input = document.querySelector(".add-input");
+    const saveButton = document.querySelector(".action.save");
+    const table = document.querySelector(".table");
+    let isComposing = false;
+    let pendingCompositionSubmit = false;
+    let submitLocked = false;
+    let draggedRow = null;
+
+    const options = {
+      career: ["경력 무관", "신입", "경력"],
+      employment: ["정규직", "계약직", "인턴", "프리랜서", "파트타임"],
+      location: ["센터필드 HQ", "여의도 본사", "분당 오피스"]
+    };
+
+    const defaults = {
+      career: "경력 무관",
+      employment: "정규직",
+      location: "센터필드 HQ"
+    };
+
+    function updateEmptyView() {
+      const hasRows = rows.children.length > 0;
+      empty.style.display = hasRows ? "none" : "grid";
+      saveButton.classList.toggle("active", hasRows);
+    }
+
+    function updateTableScroll() {
+      table.classList.toggle("scrollable", table.offsetWidth < 1040);
+    }
+
+    function getDragAfterRow(y) {
+      const draggableRows = [...rows.querySelectorAll(".position-row:not(.dragging)")];
+
+      return draggableRows.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        }
+
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function closeSelects(except) {
+      document.querySelectorAll(".select-wrap.open").forEach((select) => {
+        if (select !== except) {
+          select.classList.remove("open");
+          select.querySelector(".select-trigger").setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    function createSelect(type, value) {
+      const wrap = document.createElement("div");
+      wrap.className = `select-wrap ${type}-select`;
+      wrap.dataset.type = type;
+
+      const trigger = document.createElement("button");
+      trigger.className = "select-trigger";
+      trigger.type = "button";
+      trigger.setAttribute("aria-haspopup", "listbox");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.innerHTML = `<span>${value}</span><img src="../assets/icons/chevron-down.svg" alt="" aria-hidden="true" />`;
+
+      const menu = document.createElement("div");
+      menu.className = "select-menu";
+      menu.setAttribute("role", "listbox");
+
+      options[type].forEach((option) => {
+        const item = document.createElement("button");
+        item.className = "select-option";
+        item.type = "button";
+        item.role = "option";
+        item.textContent = option;
+        item.dataset.value = option;
+        if (option === value) {
+          item.classList.add("selected");
+          item.setAttribute("aria-selected", "true");
+        } else {
+          item.setAttribute("aria-selected", "false");
+        }
+        menu.appendChild(item);
+      });
+
+      trigger.addEventListener("click", () => {
+        const opening = !wrap.classList.contains("open");
+        closeSelects(wrap);
+        wrap.classList.toggle("open", opening);
+        trigger.setAttribute("aria-expanded", String(opening));
+      });
+
+      menu.addEventListener("click", (event) => {
+        const item = event.target.closest(".select-option");
+        if (!item) return;
+
+        wrap.querySelector(".select-trigger span").textContent = item.dataset.value;
+        wrap.querySelectorAll(".select-option").forEach((option) => {
+          const selected = option === item;
+          option.classList.toggle("selected", selected);
+          option.setAttribute("aria-selected", String(selected));
+        });
+
+        const row = wrap.closest(".position-row");
+        if (type === "career") {
+          row.dataset.career = item.dataset.value;
+          wrap.classList.toggle("compact", item.dataset.value === "경력");
+          if (item.dataset.value !== "경력") {
+            row.querySelector(".years-field input").value = "";
+          }
+        }
+
+        wrap.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+      });
+
+      wrap.append(trigger, menu);
+      return wrap;
+    }
+
+    function addRow(jobName) {
+      const row = document.createElement("div");
+      row.className = "position-row";
+      row.dataset.career = defaults.career;
+
+      const handleCell = document.createElement("div");
+      handleCell.className = "handle-cell";
+      handleCell.draggable = true;
+      handleCell.setAttribute("aria-label", `${jobName} 행 이동`);
+      handleCell.innerHTML = `<img class="handle" src="../assets/icons/handle.svg" alt="" aria-hidden="true" />`;
+
+      const jobCell = document.createElement("div");
+      jobCell.className = "cell";
+      const jobInput = document.createElement("input");
+      jobInput.className = "job-input";
+      jobInput.type = "text";
+      jobInput.value = jobName;
+      jobInput.setAttribute("aria-label", "직군");
+      jobCell.appendChild(jobInput);
+
+      const careerCell = document.createElement("div");
+      careerCell.className = "cell career-cell";
+      careerCell.appendChild(createSelect("career", defaults.career));
+      const years = document.createElement("label");
+      years.className = "years-field";
+      years.innerHTML = `<input type="text" inputmode="numeric" aria-label="경력 연차" /><span>년 이상</span>`;
+      careerCell.appendChild(years);
+
+      const employmentCell = document.createElement("div");
+      employmentCell.className = "cell";
+      employmentCell.appendChild(createSelect("employment", defaults.employment));
+
+      const locationCell = document.createElement("div");
+      locationCell.className = "cell";
+      locationCell.appendChild(createSelect("location", defaults.location));
+
+      const deleteCell = document.createElement("div");
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "icon-button";
+      deleteButton.type = "button";
+      deleteButton.setAttribute("aria-label", `${jobName} 삭제`);
+      deleteButton.innerHTML = `<img src="../assets/icons/trash.svg" alt="" aria-hidden="true" />`;
+      deleteCell.appendChild(deleteButton);
+
+      handleCell.addEventListener("dragstart", (event) => {
+        draggedRow = row;
+        row.classList.add("dragging");
+        document.body.classList.add("is-dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", jobInput.value);
+      });
+
+      handleCell.addEventListener("dragend", () => {
+        row.classList.remove("dragging");
+        document.body.classList.remove("is-dragging");
+        draggedRow = null;
+      });
+
+      jobInput.addEventListener("input", () => {
+        const label = jobInput.value.trim() || "이 행";
+        handleCell.setAttribute("aria-label", `${label} 행 이동`);
+        deleteButton.setAttribute("aria-label", `${label} 삭제`);
+      });
+
+      deleteButton.addEventListener("click", () => {
+        row.remove();
+        closeSelects();
+        updateEmptyView();
+        input.focus();
+      });
+
+      years.querySelector("input").addEventListener("input", (event) => {
+        event.target.value = event.target.value.replace(/\D/g, "");
+      });
+
+      row.append(handleCell, jobCell, careerCell, employmentCell, locationCell, deleteCell);
+      rows.appendChild(row);
+      updateEmptyView();
+    }
+
+    function submitJobName() {
+      if (submitLocked) return;
+
+      const value = input.value.trim();
+      if (!value) return;
+
+      submitLocked = true;
+      addRow(value);
+      input.value = "";
+      requestAnimationFrame(() => {
+        submitLocked = false;
+      });
+    }
+
+    input.addEventListener("compositionstart", () => {
+      isComposing = true;
+    });
+
+    input.addEventListener("compositionend", () => {
+      isComposing = false;
+      if (pendingCompositionSubmit) {
+        pendingCompositionSubmit = false;
+        requestAnimationFrame(submitJobName);
+      }
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      if (isComposing || event.isComposing || event.keyCode === 229) {
+        pendingCompositionSubmit = true;
+        return;
+      }
+
+      event.preventDefault();
+      submitJobName();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".select-wrap")) closeSelects();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeSelects();
+    });
+
+    rows.addEventListener("dragover", (event) => {
+      if (!draggedRow) return;
+      event.preventDefault();
+
+      const afterRow = getDragAfterRow(event.clientY);
+      if (afterRow == null) {
+        rows.appendChild(draggedRow);
+      } else {
+        rows.insertBefore(draggedRow, afterRow);
+      }
+    });
+
+    new ResizeObserver(updateTableScroll).observe(table);
+    updateEmptyView();
+    updateTableScroll();
+  </script>
+</body>
+</html>

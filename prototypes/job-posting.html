@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>새 공고 UI 프로토타입</title>
+  <link rel="stylesheet" href="../assets/styles/prototype.css" />
+</head>
+<body>
+  <main class="page-shell" aria-label="새 공고 작성">
+    <button class="app-close" type="button" aria-label="닫기">×</button>
+    <div class="layout">
+      <aside>
+        <h1 class="aside-title">새 공고</h1>
+
+        <nav class="steps" aria-label="작성 단계">
+          <div class="step active"><span class="step-number">1</span><span>공고 작성</span></div>
+          <div class="step"><span class="step-number">2</span><span>채용팀 구성</span></div>
+          <div class="step"><span class="step-number">3</span><span>채용단계 구성</span></div>
+          <div class="step"><span class="step-number">4</span><span>추가 설정</span></div>
+        </nav>
+      </aside>
+
+      <section class="content">
+        <h2 class="content-title">공고 작성</h2>
+
+        <section class="job-title-section" aria-labelledby="job-title-label">
+          <h3 class="field-title" id="job-title-label">공고 제목 <span class="required">*</span></h3>
+          <div class="text-field">2025 전 직군 대규모 채용</div>
+        </section>
+
+        <section aria-labelledby="position-mode-title">
+          <h3 class="field-title" id="position-mode-title">모집분야</h3>
+          <div class="segmented" role="tablist" aria-label="모집분야 유형">
+            <button class="active" type="button" role="tab" aria-selected="true" aria-controls="single-panel" data-tab="single">단일 모집분야</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="multiple-panel" data-tab="multiple">복수 모집분야</button>
+          </div>
+
+          <div class="tab-panel active" id="single-panel" role="tabpanel" data-panel="single">
+            <div class="select-grid">
+              <label>
+                <span class="control-label">직군</span>
+                <button class="select-like" type="button">선택 안 함</button>
+              </label>
+              <label>
+                <span class="control-label">직무</span>
+                <button class="select-like" type="button">선택 안 함</button>
+              </label>
+              <label>
+                <span class="control-label">경력사항</span>
+                <button class="select-like" type="button">선택 안 함</button>
+              </label>
+              <label>
+                <span class="control-label">고용형태</span>
+                <button class="select-like" type="button">선택 안 함</button>
+              </label>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="multiple-panel" role="tabpanel" data-panel="multiple">
+            <div class="position-table">
+              <div class="table-head">
+                <span>직군</span>
+                <span>직무</span>
+                <span>경력사항</span>
+                <span>고용형태</span>
+              </div>
+              <div class="empty-state">
+                <img class="info-icon-img" src="../assets/icons/info.svg" alt="" aria-hidden="true" />
+                <span>모집분야가 없습니다</span>
+                <button class="tiny-button add-position" type="button"><span class="plus">+</span> 모집분야 추가</button>
+              </div>
+            </div>
+            <div class="table-meta">
+              <span class="sort-note"><img class="info-icon-img" src="../assets/icons/info.svg" alt="" aria-hidden="true" /> ㄱ~ㅎ순으로 자동 정렬됩니다.</span>
+              <span><span class="count-current">0</span> / 50</span>
+            </div>
+            <div class="rank-row">
+              <div class="rank-copy">
+                <span>지원자에게 희망 지원분야를</span>
+                <select aria-label="희망 지원분야 순위">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                </select>
+                <span>순위 까지 입력 받습니다.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section compact" aria-labelledby="office-title">
+          <h3 class="field-title" id="office-title">근무지</h3>
+          <button class="tiny-button" type="button"><span class="plus">+</span> 근무지 추가</button>
+        </section>
+
+        <section class="section" aria-labelledby="deadline-title">
+          <h3 class="field-title" id="deadline-title">공고 마감기한</h3>
+          <div class="date-input">
+            <span>종료일</span>
+            <svg class="calendar" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="5" y="6" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 4v4M16 4v4M5 10h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" role="presentation" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="modal-header">
+        <h2 class="modal-title" id="modal-title">복수 모집분야 추가</h2>
+        <button class="close-button" type="button" aria-label="닫기"></button>
+        <label class="modal-search">
+          <input type="text" placeholder="새 직군 추가" autofocus />
+          <span class="enter-hint">↩ Enter</span>
+        </label>
+      </header>
+
+      <div class="modal-table">
+        <div class="modal-table-head">
+          <span>직군</span>
+          <span>직무</span>
+          <span>경력사항</span>
+          <span>고용형태</span>
+        </div>
+        <div class="modal-empty">
+          <img class="info-icon-img" src="../assets/icons/info.svg" alt="" aria-hidden="true" />
+          <span>새 직군을 추가하세요.</span>
+        </div>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="modal-action cancel" type="button">취소</button>
+        <button class="modal-action save" type="button">저장</button>
+      </footer>
+    </section>
+  </div>
+
+  <script>
+    const tabButtons = document.querySelectorAll("[data-tab]");
+    const panels = document.querySelectorAll("[data-panel]");
+    const backdrop = document.querySelector(".modal-backdrop");
+    const addPositionButton = document.querySelector(".add-position");
+    const closeButtons = document.querySelectorAll(".close-button, .modal-action.cancel, .modal-action.save");
+    const modalInput = document.querySelector(".modal-search input");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.tab;
+
+        tabButtons.forEach((tab) => {
+          const active = tab === button;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", String(active));
+        });
+
+        panels.forEach((panel) => {
+          panel.classList.toggle("active", panel.dataset.panel === target);
+        });
+      });
+    });
+
+    function openModal() {
+      backdrop.classList.add("open");
+      backdrop.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => modalInput.focus());
+    }
+
+    function closeModal() {
+      backdrop.classList.remove("open");
+      backdrop.setAttribute("aria-hidden", "true");
+      addPositionButton.focus();
+    }
+
+    addPositionButton.addEventListener("click", openModal);
+    closeButtons.forEach((button) => button.addEventListener("click", closeModal));
+
+    backdrop.addEventListener("click", (event) => {
+      if (event.target === backdrop) closeModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && backdrop.classList.contains("open")) {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
